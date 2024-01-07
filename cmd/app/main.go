@@ -4,6 +4,8 @@ import (
 	"context"
 	"fmt"
 	"omg/intermal/delivery/http"
+	"omg/intermal/repository"
+	"omg/intermal/service"
 	"omg/pkg/env"
 	"os"
 	"os/signal"
@@ -16,7 +18,9 @@ func main() {
 	quit := make(chan os.Signal, 1)
 	ctx := context.Background()
 
-	h := http.NewHandler()
+	r := repository.NewRepository()
+	s := service.NewService(r)
+	h := http.NewHandler(s)
 
 	srv := http.CreateHTTPServer(os.Getenv("PORT"), h.InitRoutes())
 	go func() {
