@@ -34,3 +34,17 @@ func (h *Handler) getTaskStatus(r context.Context, data *getTaskStatusReq) (*get
 
 	return &getTaskStatusRes{}, nil
 }
+
+type getStaffReq struct {
+	CompanyId int `uri:"company_id" binding:"required"`
+	TaskIdId  int `uri:"task_id" binding:"required"`
+}
+
+type getStaffRes struct {
+	Data any `json:"data"`
+}
+
+func (h *Handler) getStaff(r context.Context, data *getStaffReq) (*getStaffRes, *httpwrap.ErrorHTTP) {
+
+	return &getStaffRes{}, nil
+}

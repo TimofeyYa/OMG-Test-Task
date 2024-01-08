@@ -1,0 +1,43 @@
+version: "3.1"
+
+networks:
+  net:
+    driver: bridge
+
+services:
+# database
+  postgres_omg:
+    image: postgres:15.1
+    environment:
+      POSTGRES_DB: omg
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      PGDATA: "/var/lib/postgresql/data/pgdata"
+    container_name: 'postgres_omg'
+    volumes:
+      - ./db/omg:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U user -d omg"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 2G
+#app
+  omg_app:
+    image: omg_app
+    build: ./
+    ports:
+      - "8081:8081"
+    depends_on:
+      - postgres_omg
+    # deploy:
+    #   mode: replicated
+    #   replicas: 2

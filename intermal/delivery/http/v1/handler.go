@@ -18,6 +18,6 @@ func (h *Handler) BindRoutes(r *gin.Engine) {
 	{
 		v1.GET("/:company_id/staff/task", httpwrap.Wrap(h.createTask))
 		v1.GET("/:company_id/staff/task/:task_id", httpwrap.Wrap(h.getTaskStatus))
-		v1.GET("/:company_id/staff/:task_id")
+		v1.GET("/:company_id/staff/:task_id", httpwrap.Wrap(h.getStaff))
 	}
 }
