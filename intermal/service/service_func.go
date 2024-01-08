@@ -3,7 +3,8 @@ package service
 import "context"
 
 func (s *service) CreateTask(c context.Context, companyId int) (int, error) {
-	return 0, nil
+	// TODO: Можно добавить проверку, есть ли уже активная таска для данной компании, если есть вернуть её id
+	return s.repo.Store.CreateTask(c, companyId)
 }
 
 func (s *service) GetStatusTask(c context.Context, taskId int) (string, error) {

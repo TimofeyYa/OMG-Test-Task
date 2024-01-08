@@ -8,6 +8,7 @@ CREATE TYPE statuses AS ENUM (
 
 CREATE TABLE tasks (
   "id" BIGSERIAL PRIMARY KEY,
+  "company_id" int NOT NULL,
   "status" statuses NOT NULL
 );
 

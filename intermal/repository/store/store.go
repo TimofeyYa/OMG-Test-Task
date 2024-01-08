@@ -18,8 +18,15 @@ func NewStore(conn *pgxpool.Pool, apiUri string) *Store {
 	}
 }
 
-func (s *Store) CreateTask(c context.Context) (int, error) {
-	return 0, nil
+func (s *Store) CreateTask(c context.Context, companyId int) (int, error) {
+	sql := `INSERT INTO tasks (company_id, status) VALUES ($1, $2) RETURNING "id"`
+
+	var taskId int
+	if err := s.conn.QueryRow(c, sql, companyId, "InProgress").Scan(&taskId); err != nil {
+		return 0, err
+	}
+
+	return taskId, nil
 }
 
 func (s *Store) PerformActiveTasks(c context.Context) error {

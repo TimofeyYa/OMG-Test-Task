@@ -8,7 +8,7 @@ import (
 )
 
 type Store interface {
-	CreateTask(c context.Context) (int, error)
+	CreateTask(c context.Context, companyId int) (int, error)
 	PerformActiveTasks(c context.Context) error
 	GetStoreStaff(c context.Context, taskId int) (*any, error)
 }

@@ -13,10 +13,17 @@ type createTaskRes struct {
 	TaskId int `json:"task_id"`
 }
 
-func (h *Handler) createTask(r context.Context, data *createTaskReq) (*createTaskRes, *httpwrap.ErrorHTTP) {
+func (h *Handler) createTask(c context.Context, data *createTaskReq) (*createTaskRes, *httpwrap.ErrorHTTP) {
+	newTaskId, err := h.service.CreateTask(c, data.CompanyId)
+	if err != nil {
+		return nil, &httpwrap.ErrorHTTP{
+			Code: 500,
+			Msg:  err.Error(),
+		}
+	}
 
 	return &createTaskRes{
-		TaskId: data.CompanyId,
+		TaskId: newTaskId,
 	}, nil
 }
 

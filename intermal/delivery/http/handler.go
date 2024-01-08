@@ -20,7 +20,7 @@ func NewHandler(service service.Service) *Handler {
 func (h *Handler) InitRoutes() *gin.Engine {
 	router := gin.Default()
 
-	v1.NewHandler().BindRoutes(router)
+	v1.NewHandler(h.service).BindRoutes(router)
 
 	return router
 }
