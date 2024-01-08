@@ -29,6 +29,10 @@ func (s *Store) CreateTask(c context.Context, companyId int) (int, error) {
 	return taskId, nil
 }
 
+func (s *Store) GetTaskStatus(c context.Context, taskId int) (string, error) {
+	return "", nil
+}
+
 func (s *Store) PerformActiveTasks(c context.Context) error {
 	return nil
 }
