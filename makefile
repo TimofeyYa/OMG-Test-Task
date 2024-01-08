@@ -9,7 +9,8 @@ build:
 	mkdir -p ${BINDIR}
 	go build -o ${BINDIR}/app ${PACKAGE}
 
-run-all: build
+run-all: 
+	GOOS=linux GOARCH=amd64 make build
 	sudo docker compose up --force-recreate --build
 
 migrate-up:

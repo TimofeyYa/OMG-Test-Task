@@ -2,10 +2,11 @@ package main
 
 import (
 	"context"
-	"fmt"
+	"log"
 	"omg/intermal/delivery/http"
 	"omg/intermal/repository"
 	"omg/intermal/service"
+	"omg/pkg/clients"
 	"omg/pkg/env"
 	"os"
 	"os/signal"
@@ -14,27 +15,37 @@ import (
 
 func main() {
 	env.LoadEnvFile()
-
-	quit := make(chan os.Signal, 1)
 	ctx := context.Background()
 
-	r := repository.NewRepository()
+	dbConf := clients.DBConfig{
+		Host:     os.Getenv("DB_HOST"),
+		Port:     os.Getenv("DB_PORT"),
+		DataBase: os.Getenv("DB_NAME"),
+		User:     os.Getenv("DB_USER"),
+		Password: os.Getenv("DB_PASSWORD"),
+	}
+	pgConn, err := clients.InitPostgresClient(dbConf, 5)
+	if err != nil {
+		log.Fatalln(err.Error())
+	}
+
+	r := repository.NewRepository(os.Getenv("YCLIENTS_URI"), pgConn)
 	s := service.NewService(r)
 	h := http.NewHandler(s)
 
 	srv := http.CreateHTTPServer(os.Getenv("PORT"), h.InitRoutes())
 	go func() {
 		if err := srv.Run(); err != nil {
-			fmt.Printf("ERROR: %s\n", err.Error())
-			quit <- syscall.SIGPIPE
+			log.Fatalf("ERROR: %s\n", err.Error())
 		}
 	}()
 
 	// Graceful Shutdown
+	quit := make(chan os.Signal, 1)
 	signal.Notify(quit, syscall.SIGTERM, syscall.SIGINT)
 	<-quit
 
 	if err := srv.Shutdown(ctx); err != nil {
-		fmt.Printf("ERROR: %s\n", err.Error())
+		log.Fatalf("ERROR: %s\n", err.Error())
 	}
 }
