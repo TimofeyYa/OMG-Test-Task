@@ -1,8 +1,14 @@
 package service
 
-import "omg/intermal/repository"
+import (
+	"context"
+	"omg/intermal/repository"
+)
 
 type Service interface {
+	CreateTask(c context.Context, companyId int) (int, error)
+	GetStatusTask(c context.Context, taskId int) (string, error)
+	GetStaff(c context.Context, taskId int) (*any, error)
 }
 
 type service struct {
