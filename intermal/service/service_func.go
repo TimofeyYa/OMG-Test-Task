@@ -1,6 +1,10 @@
 package service
 
-import "context"
+import (
+	"context"
+	"log"
+	"time"
+)
 
 func (s *service) CreateTask(c context.Context, companyId int) (int, error) {
 	// TODO: Можно добавить проверку, есть ли уже активная таска для данной компании, если есть вернуть её id
@@ -16,5 +20,16 @@ func (s *service) GetStaff(c context.Context, taskId int) (*any, error) {
 }
 
 func (s *service) ResolveTasks(c context.Context) error {
-	return nil
+	t := time.NewTicker(time.Second)
+	for {
+		select {
+		case <-c.Done():
+			return nil
+		case <-t.C:
+			err := s.repo.PerformActiveTasks(c)
+			if err != nil {
+				log.Println(err.Error())
+			}
+		}
+	}
 }

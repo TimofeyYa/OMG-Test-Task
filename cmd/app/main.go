@@ -40,6 +40,9 @@ func main() {
 		}
 	}()
 
+	// Job Start
+	go s.ResolveTasks(ctx)
+
 	// Graceful Shutdown
 	quit := make(chan os.Signal, 1)
 	signal.Notify(quit, syscall.SIGTERM, syscall.SIGINT)
