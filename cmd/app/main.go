@@ -4,6 +4,7 @@ import (
 	"context"
 	"log"
 	"omg/intermal/delivery/http"
+	"omg/intermal/models"
 	"omg/intermal/repository"
 	"omg/intermal/service"
 	"omg/pkg/clients"
@@ -29,7 +30,12 @@ func main() {
 		log.Fatalln(err.Error())
 	}
 
-	r := repository.NewRepository(os.Getenv("YCLIENTS_URI"), pgConn)
+	tokens := models.TokenPair{
+		User:   os.Getenv("USER_TOKEN"),
+		Bearer: os.Getenv("AUTH_TOKEN"),
+	}
+
+	r := repository.NewRepository(os.Getenv("YCLIENTS_URI"), pgConn, &tokens)
 	s := service.NewService(r)
 	h := http.NewHandler(s)
 

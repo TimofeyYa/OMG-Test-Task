@@ -5,3 +5,8 @@ type Task struct {
 	CompanyId int
 	Status    string
 }
+
+type TokenPair struct {
+	User   string
+	Bearer string
+}

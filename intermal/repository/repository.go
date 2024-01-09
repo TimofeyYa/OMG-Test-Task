@@ -2,6 +2,7 @@ package repository
 
 import (
 	"context"
+	"omg/intermal/models"
 	"omg/intermal/repository/store"
 
 	"github.com/jackc/pgx/v4/pgxpool"
@@ -18,8 +19,8 @@ type Repository struct {
 	Store
 }
 
-func NewRepository(apiUri string, pool *pgxpool.Pool) *Repository {
+func NewRepository(apiUri string, pool *pgxpool.Pool, tokens *models.TokenPair) *Repository {
 	return &Repository{
-		Store: store.NewStore(pool, apiUri),
+		Store: store.NewStore(pool, apiUri, tokens),
 	}
 }

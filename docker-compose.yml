@@ -38,6 +38,4 @@ services:
       - "8081:8081"
     depends_on:
       - postgres_omg
-    # deploy:
-    #   mode: replicated
-    #   replicas: 2
+    
