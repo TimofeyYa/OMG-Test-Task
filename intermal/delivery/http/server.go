@@ -17,7 +17,7 @@ func CreateHTTPServer(port string, handler http.Handler) *HTTPServer {
 			Handler:        handler,
 			MaxHeaderBytes: 1 << 20,
 			ReadTimeout:    1 * time.Second,
-			WriteTimeout:   1 * time.Second,
+			WriteTimeout:   10 * time.Second,
 		},
 	}
 	return server

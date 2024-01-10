@@ -83,15 +83,30 @@ func (h *Handler) getTaskStatus(c context.Context, data *getTaskStatusReq) (*get
 }
 
 type getStaffReq struct {
-	CompanyId int `uri:"company_id" binding:"required"`
-	TaskIdId  int `uri:"task_id" binding:"required"`
+	TaskId int `uri:"task_id"`
 }
 
-type getStaffRes struct {
-	Data any `json:"data"`
-}
+func (h *Handler) getStaff(c context.Context, data *getStaffReq) (*any, *httpwrap.ErrorHTTP) {
+	if data.TaskId == 0 {
+		return nil, &httpwrap.ErrorHTTP{
+			Code: 400,
+			Msg:  "task_id is required",
+		}
+	}
 
-func (h *Handler) getStaff(r context.Context, data *getStaffReq) (*getStaffRes, *httpwrap.ErrorHTTP) {
+	staff, err := h.service.GetStaff(c, data.TaskId)
+	if err != nil {
+		if errors.Is(models.ErrNoFound, err) {
+			return nil, &httpwrap.ErrorHTTP{
+				Code: 404,
+				Msg:  err.Error(),
+			}
+		}
+		return nil, &httpwrap.ErrorHTTP{
+			Code: 500,
+			Msg:  err.Error(),
+		}
+	}
 
-	return &getStaffRes{}, nil
+	return staff, nil
 }

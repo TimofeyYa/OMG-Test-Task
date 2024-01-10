@@ -17,7 +17,7 @@ func (s *service) GetStatusTask(c context.Context, taskId int) (*models.Status, 
 }
 
 func (s *service) GetStaff(c context.Context, taskId int) (*any, error) {
-	return nil, nil
+	return s.repo.GetStoreStaff(c, taskId)
 }
 
 func (s *service) ResolveTasks(c context.Context) error {

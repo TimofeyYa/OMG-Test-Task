@@ -181,5 +181,15 @@ func (s *Store) GetStaffFromApi(c context.Context, comapnyId int) (any, error) {
 }
 
 func (s *Store) GetStoreStaff(c context.Context, taskId int) (*any, error) {
-	return nil, nil
+	sqlReq := `SELECT result FROM tasks_result WHERE task_id = $1`
+
+	var staff any
+	if err := s.conn.QueryRow(c, sqlReq, taskId).Scan(&staff); err != nil {
+		if err.Error() == "no rows in result set" {
+			return nil, models.ErrNoFound
+		}
+		return nil, err
+	}
+
+	return &staff, nil
 }
