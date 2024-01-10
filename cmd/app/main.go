@@ -37,7 +37,7 @@ func main() {
 
 	r := repository.NewRepository(os.Getenv("YCLIENTS_URI"), pgConn, &tokens)
 	s := service.NewService(r)
-	h := http.NewHandler(s)
+	h := http.NewHandler(s, os.Getenv("BASE_HOST_NAME"))
 
 	srv := http.CreateHTTPServer(os.Getenv("PORT"), h.InitRoutes())
 	go func() {

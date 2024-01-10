@@ -8,12 +8,14 @@ import (
 )
 
 type Handler struct {
-	service service.Service
+	service  service.Service
+	baseHost string
 }
 
-func NewHandler(service service.Service) *Handler {
+func NewHandler(service service.Service, baseHost string) *Handler {
 	return &Handler{
-		service: service,
+		service:  service,
+		baseHost: baseHost,
 	}
 }
 

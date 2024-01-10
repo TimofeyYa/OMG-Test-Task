@@ -8,7 +8,7 @@ import (
 
 type Service interface {
 	CreateTask(c context.Context, companyId int) (int, error)
-	GetStatusTask(c context.Context, companyId int, taskId int) (*models.Status, error)
+	GetStatusTask(c context.Context, taskId int) (*models.Status, error)
 	GetStaff(c context.Context, taskId int) (*any, error)
 	ResolveTasks(c context.Context) error
 }

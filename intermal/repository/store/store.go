@@ -44,11 +44,11 @@ func (s *Store) CreateTask(c context.Context, companyId int) (int, error) {
 	return taskId, nil
 }
 
-func (s *Store) GetTaskStatus(c context.Context, companyId int, taskId int) (*models.Status, error) {
-	sqlReq := `SELECT status FROM tasks WHERE id = $1 and company_id = $2`
+func (s *Store) GetTaskStatus(c context.Context, taskId int) (*models.Status, error) {
+	sqlReq := `SELECT status FROM tasks WHERE id = $1`
 
 	var status string
-	if err := s.conn.QueryRow(c, sqlReq, taskId, companyId).Scan(&status); err != nil {
+	if err := s.conn.QueryRow(c, sqlReq, taskId).Scan(&status); err != nil {
 		if err.Error() == "no rows in result set" {
 			return nil, models.ErrNoFound
 		}

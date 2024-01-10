@@ -38,8 +38,7 @@ func (h *Handler) createTask(c context.Context, data *createTaskReq) (*createTas
 }
 
 type getTaskStatusReq struct {
-	CompanyId int `uri:"company_id" binding:"required"`
-	TaskIdId  int `uri:"task_id" binding:"required"`
+	TaskId int `form:"task_id"`
 }
 
 type getTaskStatusRes struct {
@@ -48,7 +47,14 @@ type getTaskStatusRes struct {
 }
 
 func (h *Handler) getTaskStatus(c context.Context, data *getTaskStatusReq) (*getTaskStatusRes, *httpwrap.ErrorHTTP) {
-	statusData, err := h.service.GetStatusTask(c, data.CompanyId, data.TaskIdId)
+	if data.TaskId == 0 {
+		return nil, &httpwrap.ErrorHTTP{
+			Code: 400,
+			Msg:  "task_id is required",
+		}
+	}
+
+	statusData, err := h.service.GetStatusTask(c, data.TaskId)
 	if err != nil {
 		if errors.Is(models.ErrNoFound, err) {
 			return nil, &httpwrap.ErrorHTTP{
@@ -63,7 +69,7 @@ func (h *Handler) getTaskStatus(c context.Context, data *getTaskStatusReq) (*get
 	}
 
 	if statusData.IsDone {
-		uri := fmt.Sprintf("/%d/staff/%d", data.CompanyId, data.TaskIdId)
+		uri := fmt.Sprintf("%s/v1/get_full_staff_list_load_data/%d", h.baseHost, data.TaskId)
 		return &getTaskStatusRes{
 			Uri:    &uri,
 			Status: statusData.Name,
