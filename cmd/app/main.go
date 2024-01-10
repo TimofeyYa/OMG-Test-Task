@@ -39,6 +39,7 @@ func main() {
 	s := service.NewService(r)
 	h := http.NewHandler(s, os.Getenv("BASE_HOST_NAME"))
 
+	// Http server start
 	srv := http.CreateHTTPServer(os.Getenv("PORT"), h.InitRoutes())
 	go func() {
 		if err := srv.Run(); err != nil {
