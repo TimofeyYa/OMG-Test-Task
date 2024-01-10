@@ -164,6 +164,12 @@ func (s *Store) GetStaffFromApi(c context.Context, comapnyId int) (any, error) {
 	}
 	defer res.Body.Close()
 
+	if res.StatusCode != 200 {
+		thisErr := fmt.Errorf("err: request to api status code %d", res.StatusCode)
+		log.Println(thisErr.Error())
+		return nil, thisErr
+	}
+
 	var dataStaff any
 	err = json.NewDecoder(res.Body).Decode(&dataStaff)
 	if err != nil {

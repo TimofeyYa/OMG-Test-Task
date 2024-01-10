@@ -9,7 +9,7 @@ import (
 )
 
 type createTaskReq struct {
-	CompanyId int `uri:"company_id" binding:"required"`
+	CompanyId int `form:"company_id"`
 }
 
 type createTaskRes struct {
@@ -17,6 +17,13 @@ type createTaskRes struct {
 }
 
 func (h *Handler) createTask(c context.Context, data *createTaskReq) (*createTaskRes, *httpwrap.ErrorHTTP) {
+	if data.CompanyId == 0 {
+		return nil, &httpwrap.ErrorHTTP{
+			Code: 400,
+			Msg:  "company_id is required",
+		}
+	}
+
 	newTaskId, err := h.service.CreateTask(c, data.CompanyId)
 	if err != nil {
 		return nil, &httpwrap.ErrorHTTP{

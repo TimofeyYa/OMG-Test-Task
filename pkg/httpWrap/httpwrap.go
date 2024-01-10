@@ -23,6 +23,10 @@ func Wrap[reqData any, resData any](f func(c context.Context, body *reqData) (*r
 			c.AbortWithStatusJSON(400, gin.H{"status": false, "message": err.Error()})
 			return
 		}
+		if err := c.ShouldBindQuery(&body); err != nil {
+			c.AbortWithStatusJSON(400, gin.H{"status": false, "message": err.Error()})
+			return
+		}
 
 		result, err := f(c, &body)
 		if err != nil {

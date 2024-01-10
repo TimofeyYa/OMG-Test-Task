@@ -20,8 +20,8 @@ func NewHandler(service service.Service) *Handler {
 func (h *Handler) BindRoutes(r *gin.Engine) {
 	v1 := r.Group("/v1")
 	{
-		v1.GET("/:company_id/staff/task", httpwrap.Wrap(h.createTask))
-		v1.GET("/:company_id/staff/task/:task_id", httpwrap.Wrap(h.getTaskStatus))
-		v1.GET("/:company_id/staff/:task_id", httpwrap.Wrap(h.getStaff))
+		v1.GET("/get_full_staff_list", httpwrap.Wrap(h.createTask))
+		v1.GET("/get_task_status", httpwrap.Wrap(h.getTaskStatus))
+		v1.GET("/get_full_staff_list_load_data/:task_id", httpwrap.Wrap(h.getStaff))
 	}
 }
