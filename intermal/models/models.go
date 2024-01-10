@@ -6,6 +6,11 @@ type Task struct {
 	Status    string
 }
 
+type Status struct {
+	Name   string
+	IsDone bool
+}
+
 type TokenPair struct {
 	User   string
 	Bearer string

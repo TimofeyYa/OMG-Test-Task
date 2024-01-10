@@ -44,8 +44,21 @@ func (s *Store) CreateTask(c context.Context, companyId int) (int, error) {
 	return taskId, nil
 }
 
-func (s *Store) GetTaskStatus(c context.Context, taskId int) (string, error) {
-	return "", nil
+func (s *Store) GetTaskStatus(c context.Context, companyId int, taskId int) (*models.Status, error) {
+	sqlReq := `SELECT status FROM tasks WHERE id = $1 and company_id = $2`
+
+	var status string
+	if err := s.conn.QueryRow(c, sqlReq, taskId, companyId).Scan(&status); err != nil {
+		if err.Error() == "no rows in result set" {
+			return nil, models.ErrNoFound
+		}
+		return nil, err
+	}
+
+	return &models.Status{
+		Name:   status,
+		IsDone: status == DoneStatus,
+	}, nil
 }
 
 type StaffAPIItem struct {

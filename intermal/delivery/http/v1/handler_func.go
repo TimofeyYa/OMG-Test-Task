@@ -2,6 +2,9 @@ package v1
 
 import (
 	"context"
+	"errors"
+	"fmt"
+	"omg/intermal/models"
 	httpwrap "omg/pkg/httpWrap"
 )
 
@@ -37,9 +40,33 @@ type getTaskStatusRes struct {
 	Uri    *string `json:"uri"`
 }
 
-func (h *Handler) getTaskStatus(r context.Context, data *getTaskStatusReq) (*getTaskStatusRes, *httpwrap.ErrorHTTP) {
+func (h *Handler) getTaskStatus(c context.Context, data *getTaskStatusReq) (*getTaskStatusRes, *httpwrap.ErrorHTTP) {
+	statusData, err := h.service.GetStatusTask(c, data.CompanyId, data.TaskIdId)
+	if err != nil {
+		if errors.Is(models.ErrNoFound, err) {
+			return nil, &httpwrap.ErrorHTTP{
+				Code: 404,
+				Msg:  err.Error(),
+			}
+		}
+		return nil, &httpwrap.ErrorHTTP{
+			Code: 500,
+			Msg:  err.Error(),
+		}
+	}
 
-	return &getTaskStatusRes{}, nil
+	if statusData.IsDone {
+		uri := fmt.Sprintf("/%d/staff/%d", data.CompanyId, data.TaskIdId)
+		return &getTaskStatusRes{
+			Uri:    &uri,
+			Status: statusData.Name,
+		}, nil
+	}
+
+	return &getTaskStatusRes{
+		Uri:    nil,
+		Status: statusData.Name,
+	}, nil
 }
 
 type getStaffReq struct {
